@@ -64,11 +64,11 @@ const parsers: Array<ParserFn | { virtual: VirtualParserFn }> = [
   parseLogbookArea,
   parseLogbookArea,
   parseLogbookArea,
-  parseDisenchantCandidates,
   parseModifiers, // enchant
   parseModifiers, // scourge
   parseModifiers, // implicit
   parseModifiers, // explicit
+  parseDisenchantCandidates,
   { virtual: transformToLegacyModifiers },
   { virtual: parseFractured },
   { virtual: parseBlightedMap },
