@@ -40,7 +40,7 @@ jobs:
     needs: renderer
     strategy:
       matrix:
-        os: [windows-2022, ubuntu-22.04, macos-13]
+        os: [windows-2022, ubuntu-22.04, macos-15-intel, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -74,4 +74,3 @@ jobs:
             ./main/dist/*.exe
             ./main/dist/*.AppImage
           retention-days: 7
-
