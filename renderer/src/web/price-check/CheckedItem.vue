@@ -227,7 +227,7 @@ export default defineComponent({
 
     const disenchantValue = computed(() => {
       for (const uniqueItemDisenchanting of props.item.disenchantCandidates) {
-        if (uniqueItemDisenchanting.name == props.item.info.refName) {
+        if (uniqueItemDisenchanting.name === props.item.info.refName) {
           return uniqueItemDisenchanting.value
         }
       }
