@@ -13,6 +13,19 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  pre_release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create or update GitHub pre-release for tag
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          prerelease: true
+          draft: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   renderer:
     runs-on: ubuntu-latest
     steps:
@@ -37,7 +50,7 @@ jobs:
           retention-days: 1
 
   package:
-    needs: renderer
+    needs: [renderer, pre_release]
     strategy:
       matrix:
         os: [windows-2022, ubuntu-22.04, macos-15-intel, macos-latest]
