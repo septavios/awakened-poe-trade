@@ -4,11 +4,21 @@ on:
   push:
     branches:
       - 'master'
+      - 'main'
     tags-ignore:
       - '**'
     paths-ignore:
       - 'docs/**'
       - README.md
+  pull_request:
+    paths-ignore:
+      - 'docs/**'
+      - README.md
+  workflow_dispatch:
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   renderer:
@@ -16,6 +26,10 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'npm'
+        cache-dependency-path: renderer/package-lock.json
     - run: npm ci
       working-directory: ./renderer
     - run: npm run make-index-files
@@ -39,6 +53,10 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'npm'
+        cache-dependency-path: main/package-lock.json
     - uses: actions/download-artifact@v4
       with:
         name: renderer-dist
@@ -51,6 +69,19 @@ jobs:
       working-directory: ./main
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Upload packaged artifacts
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-dist-${{ matrix.os }}
+        path: |
+          ./main/dist/*.yml
+          ./main/dist/*.json
+          ./main/dist/*.zip
+          ./main/dist/*.dmg
+          ./main/dist/*.exe
+          ./main/dist/*.AppImage
+        retention-days: 7
     - name: Hash
       if: ${{ startsWith(matrix.os, 'windows') }}
       run: type .\main\dist\latest.yml
