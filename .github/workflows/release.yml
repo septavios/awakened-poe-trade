@@ -14,6 +14,7 @@ concurrency:
 
 jobs:
   pre_release:
+    if: ${{ github.repository_owner == 'septavios' }}
     runs-on: ubuntu-latest
     steps:
       - name: Create or update GitHub pre-release for tag
@@ -27,6 +28,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   renderer:
+    if: ${{ github.repository_owner == 'septavios' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -55,6 +57,7 @@ jobs:
       matrix:
         os: [macos-latest]
     runs-on: ${{ matrix.os }}
+    if: ${{ github.repository_owner == 'septavios' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
