@@ -64,8 +64,8 @@
       </div>
     </div>
   </div>
-  <div v-if="hudActive" class="absolute" :style="hudStyle">
-    <div class="bg-orange-600 text-gray-900 rounded px-2 py-1 shadow" style="box-shadow: 0 1px 3px 0 rgb(0, 0, 0), 0 1px 2px 0 rgb(0, 0, 0);">
+  <div v-if="hudActive" class="absolute pointer-events-none" :style="hudStyle">
+    <div class="bg-orange-600 text-gray-900 rounded px-2 py-1 shadow pointer-events-none" style="box-shadow: 0 1px 3px 0 rgb(0, 0, 0), 0 1px 2px 0 rgb(0, 0, 0);">
       {{ hudText }}
     </div>
   </div>
