@@ -75,12 +75,13 @@ const bisLabel = computed(() => {
   const ref = props.item.info.refName
   if (!isBisBase(props.item.info.namespace, cat, ref)) return ''
   const itemCheck = AppConfig().widgets.find(w => w.wmType === 'item-check') as any
-  if (!itemCheck?.showBisBadge) return ''
+  if (itemCheck && itemCheck.showBisBadge === false) return ''
   const res = getBisRankWithType(cat, ref)
   if (res) {
     const typeKey = `item.defence_type_${res.type}`
     const typeLabel = t(typeKey)
-    if (itemCheck.showBisType) {
+    const showType = !(itemCheck && itemCheck.showBisType === false)
+    if (showType) {
       return t('item.bis_rank_pill_with_type', [String(res.rank), typeLabel])
     } else {
       return t('item.bis_rank_pill', [String(res.rank)])
