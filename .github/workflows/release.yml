@@ -53,7 +53,7 @@ jobs:
     needs: [renderer, pre_release]
     strategy:
       matrix:
-        os: [macos-latest]
+        os: [macos-14]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -74,6 +74,8 @@ jobs:
         working-directory: ./main
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: List dist contents
+        run: ls -la ./main/dist || true
       - name: Attach DMG to GitHub pre-release
         if: contains(matrix.os, 'macos')
         uses: softprops/action-gh-release@v1
