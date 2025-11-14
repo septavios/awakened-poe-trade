@@ -15,12 +15,21 @@ concurrency:
 jobs:
   pre_release:
     runs-on: ubuntu-latest
+    outputs:
+      date_tag: ${{ steps.tag.outputs.tag }}
     steps:
-      - name: Create or update GitHub pre-release for tag
+      - name: Compute date
+        id: date
+        run: echo "today=$(date +%Y%m%d)" >> "$GITHUB_OUTPUT"
+      - name: Compose date-suffixed tag
+        id: tag
+        run: echo "tag=${{ github.ref_name }}-${{ steps.date.outputs.today }}" >> "$GITHUB_OUTPUT"
+      - name: Create or update GitHub pre-release for date-suffixed tag
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.ref_name }}
-          name: ${{ github.ref_name }}
+          tag_name: ${{ steps.tag.outputs.tag }}
+          target_commitish: ${{ github.sha }}
+          name: ${{ steps.tag.outputs.tag }}
           prerelease: true
           draft: false
         env:
@@ -78,7 +87,7 @@ jobs:
         working-directory: ./main
       - run: npm run build
         working-directory: ./main
-      - run: npm run package "--" -p onTag
+      - run: npm run package "--" -p never
         working-directory: ./main
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -91,8 +100,18 @@ jobs:
             echo "No DMG produced in ./main/dist";
             exit 1;
           fi
-      # Electron Builder publishes artifacts to the GitHub release via `-p onTag`.
-      # We only verify DMG presence; upload is handled by electron-builder.
+      - name: Attach DMG to GitHub pre-release (date-suffixed tag)
+        if: contains(matrix.os, 'macos')
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ needs.pre_release.outputs.date_tag }}
+          files: |
+            ./main/dist/*.dmg
+          fail_on_unmatched_files: true
+          prerelease: true
+          draft: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload packaged artifacts
         if: always()
         uses: actions/upload-artifact@v4
