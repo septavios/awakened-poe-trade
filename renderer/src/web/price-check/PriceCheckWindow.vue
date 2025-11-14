@@ -205,7 +205,10 @@ export default defineComponent({
           if (hudTimer != null) {
             clearTimeout(hudTimer)
           }
-          hudTimer = setTimeout(() => { hudActive.value = false }, props.config.bisHudDurationMs) as unknown as number
+          hudTimer = (window.setTimeout(() => {
+            hudActive.value = false
+            wm.hide(props.config.wmId)
+          }, Math.max(250, props.config.bisHudDurationMs))) as unknown as number
           return
         }
       }
