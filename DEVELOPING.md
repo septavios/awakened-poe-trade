@@ -41,3 +41,14 @@ yarn build
 # install without errors
 CSC_NAME="Certificate name in Keychain" yarn package
 ```
+
+# Changelog
+
+We maintain a project-wide `CHANGELOG.md` using the Keep a Changelog format and Semantic Versioning.
+
+- For feature branches, add entries under the `Unreleased` section.
+- Group changes under: Added, Changed, Fixed, Removed, Security, Deprecated.
+- Keep entries short and actionable; reference PR numbers and link issues when helpful.
+- When tagging a release, move items from `Unreleased` to a new section with the release version and date.
+
+CI will fail pull requests that modify code in `renderer/src`, `main/src`, or `ipc` without updating `CHANGELOG.md`. The PR template reminds you to add an entry.

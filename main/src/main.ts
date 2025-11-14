@@ -25,6 +25,8 @@ if (process.platform !== 'darwin') {
 if (process.platform === 'linux') {
   app.commandLine.appendSwitch('ozone-platform', 'x11')
 }
+// Disable QUIC/HTTP3 to avoid net::ERR_QUIC_PROTOCOL_ERROR on some networks
+app.commandLine.appendSwitch('disable-quic')
 app.enableSandbox()
 
 let tray: AppTray

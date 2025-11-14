@@ -44,13 +44,16 @@ module.exports = {
       node: true
     }
   }, {
-    files: ['*.ts'],
+    files: ['**/*.ts'],
     parserOptions: {
-      project: './tsconfig.json'
+      project: './tsconfig.json',
+      tsconfigRootDir: __dirname
     }
   }],
   parserOptions: {
     parser: '@typescript-eslint/parser',
-    extraFileExtensions: ['.vue']
+    extraFileExtensions: ['.vue'],
+    project: './tsconfig.json',
+    tsconfigRootDir: __dirname
   }
 }

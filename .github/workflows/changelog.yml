@@ -1,0 +1,38 @@
+name: Changelog Enforcement
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+jobs:
+  require-changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Detect changed files
+        id: changes
+        uses: tj-actions/changed-files@v44
+        with:
+          fetch_depth: 0
+      - name: Require CHANGELOG.md for code changes
+        shell: bash
+        run: |
+          echo "Changed files: ${{ steps.changes.outputs.all_changed_files }}"
+          need_changelog=0
+          has_changelog=0
+          for file in ${{ steps.changes.outputs.all_changed_files }}; do
+            if [[ $file == renderer/src/* || $file == main/src/* || $file == ipc/* ]]; then
+              need_changelog=1
+            fi
+            if [[ $file == CHANGELOG.md ]]; then
+              has_changelog=1
+            fi
+          done
+          if [[ $need_changelog -eq 1 && $has_changelog -eq 0 ]]; then
+            echo "Error: Code changes detected without a CHANGELOG.md update under 'Unreleased'."
+            echo "Please add a concise entry grouped by category (Added/Changed/Fixed/etc.)."
+            exit 1
+          else
+            echo "Changelog check passed."
+          fi
+

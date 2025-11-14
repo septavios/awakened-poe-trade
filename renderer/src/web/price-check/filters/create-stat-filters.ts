@@ -20,7 +20,7 @@ export interface FiltersCreationContext {
 export function createExactStatFilters (
   item: ParsedItem,
   statsByType: StatCalculated[],
-  opts: { searchStatRange: number }
+  opts: { searchStatRange: number, enableAllFilters?: boolean }
 ): StatFilter[] {
   if (
     item.mapBlighted ||
@@ -126,13 +126,17 @@ export function createExactStatFilters (
     enableGoodRolledFilters(ctx.filters, 0.66)
   }
 
+  if (opts.enableAllFilters) {
+    enableAllFilters(ctx.filters)
+  }
   return ctx.filters
 }
 
 export function initUiModFilters (
   item: ParsedItem,
   opts: {
-    searchStatRange: number
+    searchStatRange: number,
+    enableAllFilters?: boolean
   }
 ): StatFilter[] {
   const ctx: FiltersCreationContext = {
@@ -176,6 +180,9 @@ export function initUiModFilters (
 
   finalFilterTweaks(ctx)
 
+  if (opts.enableAllFilters && !item.isVeiled) {
+    enableAllFilters(ctx.filters)
+  }
   return ctx.filters
 }
 

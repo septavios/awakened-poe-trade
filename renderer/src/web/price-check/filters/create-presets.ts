@@ -15,6 +15,7 @@ export function createPresets (
     activateStockFilter: boolean
     searchStatRange: number
     useEn: boolean
+    enableAllStatFilters?: boolean
   }
 ): { presets: FilterPreset[], active: string } {
   if (item.info.refName === 'Expedition Logbook') {
@@ -23,7 +24,7 @@ export function createPresets (
       presets: item.logbookAreaMods!.map<FilterPreset>((area, idx) => ({
         id: ROMAN_NUMERALS[idx],
         filters: createFilters(item, { ...opts, exact: true }),
-        stats: createExactStatFilters(item, sumStatsByModType(area), opts)
+        stats: createExactStatFilters(item, sumStatsByModType(area), { searchStatRange: opts.searchStatRange, enableAllFilters: opts.enableAllStatFilters === true })
       }))
     }
   }
@@ -49,7 +50,7 @@ export function createPresets (
       presets: [{
         id: 'filters.preset_exact',
         filters: createFilters(item, { ...opts, exact: true }),
-        stats: createExactStatFilters(item, item.statsByType, opts)
+        stats: createExactStatFilters(item, item.statsByType, { searchStatRange: opts.searchStatRange, enableAllFilters: opts.enableAllStatFilters === true })
       }]
     }
   }
@@ -57,7 +58,7 @@ export function createPresets (
   const pseudoPreset: FilterPreset = {
     id: 'filters.preset_pseudo',
     filters: createFilters(item, { ...opts, exact: false }),
-    stats: initUiModFilters(item, opts)
+    stats: initUiModFilters(item, { searchStatRange: opts.searchStatRange, enableAllFilters: opts.enableAllStatFilters === true })
   }
 
   const likelyFinishedItem = (
@@ -86,7 +87,7 @@ export function createPresets (
   const baseItemPreset: FilterPreset = {
     id: 'filters.preset_base_item',
     filters: createFilters(item, { ...opts, exact: true }),
-    stats: createExactStatFilters(item, item.statsByType, opts)
+    stats: createExactStatFilters(item, item.statsByType, { searchStatRange: opts.searchStatRange, enableAllFilters: opts.enableAllStatFilters === true })
   }
 
   return {
