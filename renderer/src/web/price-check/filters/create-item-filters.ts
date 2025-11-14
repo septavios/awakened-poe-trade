@@ -117,14 +117,16 @@ export function createFilters (
         baseTypeTrade: t(opts, ITEM_BY_REF('ITEM', item.info.unique.base)![0])
       }
     } else {
-      const isOccupiedBy = item.statsByType.some(calc => calc.stat.ref === 'Map is occupied by #')
+      const ignoreLayout = item.statsByType.some(calc =>
+        calc.stat.ref === 'Map is occupied by #' ||
+        calc.stat.ref === "Map contains #'s Citadel")
       filters.searchExact = {
         baseType: item.info.name,
         baseTypeTrade: t(opts, item.info)
       }
       filters.searchRelaxed = {
         category: item.category,
-        disabled: !isOccupiedBy
+        disabled: !ignoreLayout
       }
     }
 
@@ -133,7 +135,7 @@ export function createFilters (
     }
 
     filters.mapTier = {
-      value: item.mapTier!,
+      value: item.map!.tier,
       disabled: false
     }
   } else if (item.info.refName === 'Expedition Logbook') {
