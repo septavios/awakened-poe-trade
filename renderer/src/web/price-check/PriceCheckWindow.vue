@@ -1,5 +1,5 @@
 <template>
-  <div
+  <div v-if="!hudActive"
     style="top: 0; left: 0; height: 100%; width: 100%; position: absolute;"
     class="flex grow h-full pointer-events-none" :class="{
     'flex-row': clickPosition === 'stash',
@@ -190,6 +190,27 @@ export default defineComponent({
         const cat = parsed.category as unknown as string | undefined
         const ref = parsed.info.refName
         if (isBisBase(parsed.info.namespace, cat, ref)) {
+          if (Host.isElectron) {
+            const width = 28.75 * AppConfig().fontSize
+            const screenX = ((e.position.x - window.screenX) > window.innerWidth / 2)
+              ? (window.screenX + window.innerWidth) - wm.poePanelWidth.value - width
+              : window.screenX + wm.poePanelWidth.value
+            MainProcess.sendEvent({
+              name: 'OVERLAY->MAIN::track-area',
+              payload: {
+                holdKey: props.config.hotkeyHold,
+                closeThreshold: 2.5 * AppConfig().fontSize,
+                from: e.position,
+                area: {
+                  x: screenX,
+                  y: window.screenY,
+                  width,
+                  height: window.innerHeight
+                },
+                dpr: window.devicePixelRatio
+              }
+            })
+          }
           const res = getBisRankWithType(cat, ref)
           if (res) {
             const typeLabel = t(`item.defence_type_${res.type}`)
