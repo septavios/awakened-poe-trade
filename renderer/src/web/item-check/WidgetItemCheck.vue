@@ -11,7 +11,7 @@
 
 <script lang="ts">
 import type { WidgetSpec } from '../overlay/interfaces'
-import type { ItemCheckWidget } from './widget.js'
+import type { ItemCheckWidget } from '../overlay/interfaces'
 
 export default {
   widget: {
@@ -30,6 +30,8 @@ export default {
         poedbKey: null,
         craftOfExileKey: null,
         stashSearchKey: null,
+        showBisBadge: true,
+        showBisType: true,
         maps: {
           profile: 1,
           showNewStats: false,

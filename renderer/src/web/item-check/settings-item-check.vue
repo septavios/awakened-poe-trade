@@ -16,6 +16,12 @@
       <label class="flex-1">{{ t('item.find_in_stash') }}</label>
       <hotkey-input v-model="stashSearchKey" class="w-48" />
     </div>
+    <div class="flex">
+      <ui-checkbox v-model="showBisBadge" class="mb-2">{{ t('item.show_bis_badge') }}</ui-checkbox>
+    </div>
+    <div class="flex">
+      <ui-checkbox v-model="showBisType" class="mb-2">{{ t('item.show_bis_type') }}</ui-checkbox>
+    </div>
   </div>
 </template>
 
@@ -29,9 +35,10 @@ export default {
 import { defineProps, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { configProp, configModelValue, findWidget } from '../settings/utils.js'
-import type { ItemCheckWidget } from './widget.js'
+import type { ItemCheckWidget } from '../overlay/interfaces'
 
 import HotkeyInput from '../settings/HotkeyInput.vue'
+import UiCheckbox from '@/web/ui/UiCheckbox.vue'
 
 const props = defineProps(configProp())
 
@@ -40,5 +47,7 @@ const wikiKey = configModelValue(() => findWidget<ItemCheckWidget>('item-check',
 const poedbKey = configModelValue(() => findWidget<ItemCheckWidget>('item-check', props.config)!, 'poedbKey')
 const craftOfExileKey = configModelValue(() => findWidget<ItemCheckWidget>('item-check', props.config)!, 'craftOfExileKey')
 const stashSearchKey = configModelValue(() => findWidget<ItemCheckWidget>('item-check', props.config)!, 'stashSearchKey')
+const showBisBadge = configModelValue(() => findWidget<ItemCheckWidget>('item-check', props.config)!, 'showBisBadge')
+const showBisType = configModelValue(() => findWidget<ItemCheckWidget>('item-check', props.config)!, 'showBisType')
 const { t } = useI18n()
 </script>

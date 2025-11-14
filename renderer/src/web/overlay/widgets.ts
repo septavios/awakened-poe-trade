@@ -52,6 +52,8 @@ export interface PriceCheckWidget extends Widget {
   builtinBrowser: boolean
   rememberCurrency: boolean
   enableAllStatFilters: boolean
+  showBisBadge: boolean
+  showBisType: boolean
 }
 
 export interface StopwatchWidget extends Widget {
@@ -70,4 +72,15 @@ export interface ImageStripWidget extends Widget {
     id: number
     url: string
   }>
+}
+
+export interface ItemCheckWidget extends Widget {
+  hotkey: string | null
+  wikiKey: string | null
+  poedbKey: string | null
+  craftOfExileKey: string | null
+  stashSearchKey: string | null
+  maps: any
+  showBisBadge: boolean
+  showBisType: boolean
 }

@@ -116,7 +116,23 @@
     "not_mirrored": "Не отражено",
     "best_in_slot_base": "Лучший базовый тип",
     "bis_rank_pill": "BiS #{0}",
-    "best_in_slot_rank_tooltip": "Лучший защитный базовый тип ({0})"
+    "bis_rank_pill_with_type": "BiS #{0} ({1})",
+    "best_in_slot_rank_tooltip": "Лучший защитный базовый тип ({0})",
+    "defence_type_armour": "Броня",
+    "defence_type_evasion": "Уклонение",
+    "defence_type_energy_shield": "Энерг. щит",
+    "defence_type_ward": "Барьер",
+    "defence_type_hybrid_armour_evasion": "Броня/Уклонение",
+    "defence_type_hybrid_armour_es": "Броня/Энерг. щит",
+    "defence_type_hybrid_evasion_es": "Уклонение/Энерг. щит",
+    "defence_type_block": "Блок",
+    "defence_type_spell_suppression": "Подавление чар",
+    "defence_type_all_res": "Все сопротивления",
+    "defence_type_projectile_damage": "Урон от снарядов",
+    "defence_type_melee_damage": "Урон ближнего боя",
+    "defence_type_stun_threshold": "Порог оглушения",
+    "show_bis_badge": "Показывать метку BiS",
+    "show_bis_type": "Показывать тип защиты в BiS"
   },
   "item_category": {
     "prop": "Категория: {0}",
@@ -351,6 +367,8 @@
     "auto_search": "Выполнять автоматический поиск при нажатии",
     "select_stock": "Всегда активировать фильтр \"Запас\"",
     "show_prediction": "Показывать приблизительную цену",
-    "remember_currency": "Запоминать фильтр \"Валюты выкупа\""
+    "remember_currency": "Запоминать фильтр \"Валюты выкупа\"",
+    "show_bis_badge": "Показывать метку BiS",
+    "show_bis_type": "Показывать тип защиты в BiS"
   }
 }

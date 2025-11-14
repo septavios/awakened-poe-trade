@@ -19,7 +19,8 @@ import { useI18n } from 'vue-i18n'
 import type { ParsedItem } from '@/parser'
 import type { ItemFilters } from './interfaces'
 import { CATEGORY_TO_TRADE_ID } from '../trade/pathofexile-trade'
-import { isBisBase, getBisRank } from '@/assets/data/bis'
+import { isBisBase, getBisRankWithType } from '@/assets/data/bis'
+import { AppConfig } from '@/web/Config'
 
 export default defineComponent({
   name: 'FilterName',
@@ -77,8 +78,18 @@ export default defineComponent({
       const cat = props.item.category as unknown as string | undefined
       const ref = props.item.info.refName
       if (!isBisBase(props.item.info.namespace, cat, ref)) return ''
-      const rank = getBisRank(cat, ref)
-      if (rank) return t('item.bis_rank_pill', [String(rank)])
+      const priceCheck = AppConfig().widgets.find(w => w.wmType === 'price-check') as any
+      if (!priceCheck?.showBisBadge) return ''
+      const res = getBisRankWithType(cat, ref)
+      if (res) {
+        const typeKey = `item.defence_type_${res.type}`
+        const typeLabel = t(typeKey)
+        if (priceCheck.showBisType) {
+          return t('item.bis_rank_pill_with_type', [String(res.rank), typeLabel])
+        } else {
+          return t('item.bis_rank_pill', [String(res.rank)])
+        }
+      }
       return t('item.best_in_slot_base')
     })
 

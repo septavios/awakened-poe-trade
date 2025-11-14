@@ -98,7 +98,23 @@
     "not_mirrored": "Not Mirrored",
     "best_in_slot_base": "Best-in-slot base",
     "bis_rank_pill": "BiS #{0}",
-    "best_in_slot_rank_tooltip": "Top defence base in its slot ({0})"
+    "bis_rank_pill_with_type": "BiS #{0} ({1})",
+    "best_in_slot_rank_tooltip": "Top defence base in its slot ({0})",
+    "defence_type_armour": "Armour",
+    "defence_type_evasion": "Evasion",
+    "defence_type_energy_shield": "Energy Shield",
+    "defence_type_ward": "Ward",
+    "defence_type_hybrid_armour_evasion": "Armour/Evasion",
+    "defence_type_hybrid_armour_es": "Armour/Energy Shield",
+    "defence_type_hybrid_evasion_es": "Evasion/Energy Shield",
+    "defence_type_block": "Block",
+    "defence_type_spell_suppression": "Spell Suppression",
+    "defence_type_all_res": "All Resistances",
+    "defence_type_projectile_damage": "Projectile Damage",
+    "defence_type_melee_damage": "Melee Damage",
+    "defence_type_stun_threshold": "Stun Threshold",
+    "show_bis_badge": "Show BiS badge",
+    "show_bis_type": "Show defence type on BiS"
   },
   "item_category": {
     "prop": "Category: {0}",
@@ -335,6 +351,8 @@
     "select_stock": "Always select \"Stock\" filter",
     "show_prediction": "Show price prediction",
     "remember_currency": "Remember the Buyout Currency filter",
-    "enable_all_stats": "Select all stats by default"
+    "enable_all_stats": "Select all stats by default",
+    "show_bis_badge": "Show BiS badge",
+    "show_bis_type": "Show defence type on BiS"
   }
 }

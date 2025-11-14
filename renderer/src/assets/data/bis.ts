@@ -76,7 +76,7 @@ export const BIS_BASES = new Set<string>([
 ])
 
 export const BIS_RANKINGS: Record<string, Partial<Record<DefenseType, string[]>>> = {
-  Helmet: {
+  'Helmet': {
     armour: ['Giantslayer Helmet'],
     evasion: ['Majestic Pelt'],
     energy_shield: ['Lich\'s Circlet'],
@@ -93,7 +93,7 @@ export const BIS_RANKINGS: Record<string, Partial<Record<DefenseType, string[]>>
     hybrid_armour_es: ['Sacred Chainmail'],
     hybrid_evasion_es: ['Necrotic Armour']
   },
-  Gloves: {
+  'Gloves': {
     armour: ['Leviathan Gauntlets', 'Thwarting Gauntlets', 'Spiked Gloves'],
     evasion: ['Velour Gloves', 'Gripped Gloves'],
     energy_shield: ['Warlock Gloves', 'Nexus Gloves', 'Fingerless Silk Gloves'],
@@ -103,7 +103,7 @@ export const BIS_RANKINGS: Record<string, Partial<Record<DefenseType, string[]>>
     melee_damage: ['Spiked Gloves'],
     projectile_damage: ['Gripped Gloves']
   },
-  Boots: {
+  'Boots': {
     armour: ['Leviathan Greaves', 'Brimstone Treads'],
     evasion: ['Velour Boots', 'Stormrider Boots'],
     energy_shield: ['Warlock Boots', 'Dreamquest Slippers'],
@@ -112,7 +112,7 @@ export const BIS_RANKINGS: Record<string, Partial<Record<DefenseType, string[]>>
     hybrid_evasion_es: ['Phantom Boots'],
     stun_threshold: ['Brimstone Treads']
   },
-  Shield: {
+  'Shield': {
     armour: ['Colossal Tower Shield', 'Ezomyte Tower Shield'],
     evasion: ['Lacquered Buckler'],
     energy_shield: ['Titanium Spirit Shield', 'Fossilised Spirit Shield', 'Harmonic Spirit Shield'],
@@ -137,6 +137,19 @@ export function getBisRank (category: string | undefined, refName: string): numb
     if (!arr) continue
     const idx = arr.indexOf(refName)
     if (idx !== -1) return (idx + 1)
+  }
+  return null
+}
+
+export function getBisRankWithType (category: string | undefined, refName: string): { rank: number, type: DefenseType } | null {
+  if (!category) return null
+  const byCat = BIS_RANKINGS[category]
+  if (!byCat) return null
+  for (const key of Object.keys(byCat) as DefenseType[]) {
+    const arr = byCat[key]
+    if (!arr) continue
+    const idx = arr.indexOf(refName)
+    if (idx !== -1) return { rank: idx + 1, type: key }
   }
   return null
 }

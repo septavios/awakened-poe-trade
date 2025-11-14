@@ -40,7 +40,8 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { type ParsedItem } from '@/parser'
-import { isBisBase, getBisRank } from '@/assets/data/bis'
+import { isBisBase, getBisRankWithType } from '@/assets/data/bis'
+import { AppConfig } from '@/web/Config'
 import * as actions from './hotkeyable-actions'
 
 const props = defineProps<{
@@ -73,8 +74,18 @@ const bisLabel = computed(() => {
   const cat = props.item.category as unknown as string | undefined
   const ref = props.item.info.refName
   if (!isBisBase(props.item.info.namespace, cat, ref)) return ''
-  const rank = getBisRank(cat, ref)
-  if (rank) return t('item.bis_rank_pill', [String(rank)])
+  const itemCheck = AppConfig().widgets.find(w => w.wmType === 'item-check') as any
+  if (!itemCheck?.showBisBadge) return ''
+  const res = getBisRankWithType(cat, ref)
+  if (res) {
+    const typeKey = `item.defence_type_${res.type}`
+    const typeLabel = t(typeKey)
+    if (itemCheck.showBisType) {
+      return t('item.bis_rank_pill_with_type', [String(res.rank), typeLabel])
+    } else {
+      return t('item.bis_rank_pill', [String(res.rank)])
+    }
+  }
   return t('item.best_in_slot_base')
 })
 </script>

@@ -95,7 +95,23 @@
     "not_mirrored": "복제되지 않은",
     "best_in_slot_base": "최고의 베이스",
     "bis_rank_pill": "BiS #{0}",
-    "best_in_slot_rank_tooltip": "슬롯에서 최고 방어 베이스 ({0})"
+    "bis_rank_pill_with_type": "BiS #{0} ({1})",
+    "best_in_slot_rank_tooltip": "슬롯에서 최고 방어 베이스 ({0})",
+    "defence_type_armour": "방어도",
+    "defence_type_evasion": "회피",
+    "defence_type_energy_shield": "에너지 보호막",
+    "defence_type_ward": "워드",
+    "defence_type_hybrid_armour_evasion": "방어도/회피",
+    "defence_type_hybrid_armour_es": "방어도/에너지 보호막",
+    "defence_type_hybrid_evasion_es": "회피/에너지 보호막",
+    "defence_type_block": "막기",
+    "defence_type_spell_suppression": "주문 억제",
+    "defence_type_all_res": "모든 저항",
+    "defence_type_projectile_damage": "투사체 피해",
+    "defence_type_melee_damage": "근접 피해",
+    "defence_type_stun_threshold": "기절 한계",
+    "show_bis_badge": "BiS 배지 표시",
+    "show_bis_type": "BiS에 방어 유형 표시"
   },
   "item_category": {
     "prop": "유형: {0}",
@@ -326,6 +342,8 @@
     "auto_search": "Perform an auto search, when pressing",
     "select_stock": "Always select \"Stock\" filter",
     "show_prediction": "Show price prediction",
-    "remember_currency": "Remember the Buyout Currency filter"
+    "remember_currency": "Remember the Buyout Currency filter",
+    "show_bis_badge": "BiS 배지 표시",
+    "show_bis_type": "BiS에 방어 유형 표시"
   }
 }

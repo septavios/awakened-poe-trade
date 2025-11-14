@@ -116,7 +116,9 @@ export default defineComponent({
         showCursor: true,
         requestPricePrediction: false,
         rememberCurrency: false,
-        enableAllStatFilters: false
+        enableAllStatFilters: false,
+        showBisBadge: true,
+        showBisType: true
       }
     }
   } satisfies WidgetSpec,

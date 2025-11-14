@@ -57,6 +57,10 @@
     <ui-checkbox class="mb-4"
       v-model="enableAllStatFilters">{{ t(':enable_all_stats') }}</ui-checkbox>
     <ui-checkbox class="mb-4"
+      v-model="showBisBadge">{{ t(':show_bis_badge') }}</ui-checkbox>
+    <ui-checkbox class="mb-4"
+      v-model="showBisType">{{ t(':show_bis_type') }}</ui-checkbox>
+    <ui-checkbox class="mb-4"
       v-model="requestPricePrediction">{{ t(':show_prediction') }} <span class="bg-gray-700 px-1 rounded">www.poeprices.info</span></ui-checkbox>
     <ui-checkbox class="mb-4"
       v-model="showCursor">{{ t(':cursor_pos') }}</ui-checkbox>
@@ -114,7 +118,6 @@ export default defineComponent({
 
     const leagues = useLeagues()
     const { t } = useI18nNs('price_check')
-
     return {
       t,
       leagueId: configModelValue(() => props.config, 'leagueId'),
@@ -139,6 +142,8 @@ export default defineComponent({
       lockedInitialSearch: configModelValue(() => configWidget.value, 'lockedInitialSearch'),
       rememberCurrency: configModelValue(() => configWidget.value, 'rememberCurrency'),
       enableAllStatFilters: configModelValue(() => configWidget.value, 'enableAllStatFilters'),
+      showBisBadge: configModelValue(() => configWidget.value, 'showBisBadge'),
+      showBisType: configModelValue(() => configWidget.value, 'showBisType'),
       searchStatRange: computed<number>({
         get () {
           return configWidget.value.searchStatRange
