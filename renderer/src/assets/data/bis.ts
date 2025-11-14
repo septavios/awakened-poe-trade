@@ -47,6 +47,7 @@ export const BIS_BASES = new Set<string>([
   'Fingerless Silk Gloves',
   'Harmonic Spirit Shield',
   'Haunted Bascinet',
+  'Conquest Helmet',
   'Conquest Lamellar',
   'Wyvernscale Gauntlets',
   'Wyvernscale Boots',
@@ -80,7 +81,7 @@ export const BIS_RANKINGS: Record<string, Partial<Record<DefenseType, string[]>>
     armour: ['Giantslayer Helmet'],
     evasion: ['Majestic Pelt'],
     energy_shield: ['Lich\'s Circlet'],
-    hybrid_armour_evasion: ['Haunted Bascinet'],
+    hybrid_armour_evasion: ['Haunted Bascinet', 'Conquest Helmet'],
     hybrid_armour_es: ['Divine Crown'],
     hybrid_evasion_es: ['Torturer\'s Mask'],
     ward: ['Runic Crown']
