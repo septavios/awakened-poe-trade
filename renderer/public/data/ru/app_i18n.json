@@ -369,8 +369,6 @@
     "show_prediction": "Показывать приблизительную цену",
     "remember_currency": "Запоминать фильтр \"Валюты выкупа\"",
     "show_bis_badge": "Показывать метку BiS",
-    "show_bis_type": "Показывать тип защиты в BiS",
-    "show_bis_hud": "Показывать всплывающую метку BiS",
-    "bis_hud_duration_ms": "Длительность HUD (мс)"
+    "show_bis_type": "Показывать тип защиты в BiS"
   }
 }

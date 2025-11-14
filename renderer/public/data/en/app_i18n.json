@@ -353,8 +353,6 @@
     "remember_currency": "Remember the Buyout Currency filter",
     "enable_all_stats": "Select all stats by default",
     "show_bis_badge": "Show BiS badge",
-    "show_bis_type": "Show defence type on BiS",
-    "show_bis_hud": "Show BiS heads-up pill",
-    "bis_hud_duration_ms": "HUD duration (ms)"
+    "show_bis_type": "Show defence type on BiS"
   }
 }

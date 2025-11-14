@@ -344,8 +344,6 @@
     "show_prediction": "Show price prediction",
     "remember_currency": "Remember the Buyout Currency filter",
     "show_bis_badge": "BiS 배지 표시",
-    "show_bis_type": "BiS에 방어 유형 표시",
-    "show_bis_hud": "BiS 헤드업 표시",
-    "bis_hud_duration_ms": "HUD 표시 시간 (ms)"
+    "show_bis_type": "BiS에 방어 유형 표시"
   }
 }
