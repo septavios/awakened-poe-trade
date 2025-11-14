@@ -305,9 +305,8 @@ export default defineComponent({
     })
 
     function closePriceCheck () {
-      if (isBrowserShown.value || !Host.isElectron) {
-        wm.hide(props.config.wmId)
-      } else {
+      wm.hide(props.config.wmId)
+      if (Host.isElectron) {
         Host.sendEvent({ name: 'OVERLAY->MAIN::focus-game', payload: undefined })
       }
     }
