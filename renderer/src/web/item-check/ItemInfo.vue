@@ -1,7 +1,10 @@
 <template>
   <div class="bg-gray-800 text-gray-200 border-gray-900 border-4 flex flex-col"
     style="min-width: 20rem; max-width: min(100vw - var(--game-panel), 30rem);">
-    <div class="bg-gray-900 py-1 px-4 text-center">{{ itemName }}</div>
+  <div class="bg-gray-900 py-1 px-4 text-center">
+    {{ itemName }}
+    <span v-if="bisLabel" class="ml-2 px-2 py-0.5 rounded bg-emerald-700 text-xs inline-block align-middle">{{ bisLabel }}</span>
+  </div>
     <div class="flex gap-1 py-1 bg-gray-900 items-center">
       <button class="btn flex-1" @click="openWiki">wiki</button>
       <button class="btn flex-1" @click="openPoedb">poedb</button>
@@ -37,6 +40,7 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { type ParsedItem } from '@/parser'
+import { isBisBase, getBisRank } from '@/assets/data/bis'
 import * as actions from './hotkeyable-actions'
 
 const props = defineProps<{
@@ -64,4 +68,13 @@ const weaponDPS = computed(() => {
 })
 
 const itemName = computed(() => props.item.info.name)
+
+const bisLabel = computed(() => {
+  const cat = props.item.category as unknown as string | undefined
+  const ref = props.item.info.refName
+  if (!isBisBase(props.item.info.namespace, cat, ref)) return ''
+  const rank = getBisRank(cat, ref)
+  if (rank) return t('item.bis_rank_pill', [String(rank)])
+  return t('item.best_in_slot_base')
+})
 </script>

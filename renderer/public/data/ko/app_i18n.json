@@ -92,7 +92,10 @@
     "veiled": "장막 속성",
     "foil_unique": "반짝이",
     "mirrored": "복제된",
-    "not_mirrored": "복제되지 않은"
+    "not_mirrored": "복제되지 않은",
+    "best_in_slot_base": "최고의 베이스",
+    "bis_rank_pill": "BiS #{0}",
+    "best_in_slot_rank_tooltip": "슬롯에서 최고 방어 베이스 ({0})"
   },
   "item_category": {
     "prop": "유형: {0}",

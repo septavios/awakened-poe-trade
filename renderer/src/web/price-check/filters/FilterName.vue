@@ -2,7 +2,10 @@
   <div class="filter-name">
     <button class="px-2 rounded border overflow-hidden text-ellipsis"
       :class="{ 'border-gray-500': showAsActive, 'border-gray-900': !showAsActive }"
-      @click="toggleAccuracy">{{ label }}</button>
+      @click="toggleAccuracy">
+      {{ label }}
+      <span v-if="bisLabel" class="ml-2 px-2 py-0.5 rounded bg-emerald-700 text-xs inline-block align-middle">{{ bisLabel }}</span>
+    </button>
     <button v-if="filters.corrupted" class="px-2" @click="corrupted = !corrupted">
       <span v-if="corrupted" class="text-red-500">{{ t('item.corrupted') }}</span>
       <span v-else class="text-gray-600">{{ t('item.not_corrupted') }}</span>
@@ -16,6 +19,7 @@ import { useI18n } from 'vue-i18n'
 import type { ParsedItem } from '@/parser'
 import type { ItemFilters } from './interfaces'
 import { CATEGORY_TO_TRADE_ID } from '../trade/pathofexile-trade'
+import { isBisBase, getBisRank } from '@/assets/data/bis'
 
 export default defineComponent({
   name: 'FilterName',
@@ -69,12 +73,22 @@ export default defineComponent({
       set (value) { props.filters.corrupted!.value = value }
     })
 
+    const bisLabel = computed(() => {
+      const cat = props.item.category as unknown as string | undefined
+      const ref = props.item.info.refName
+      if (!isBisBase(props.item.info.namespace, cat, ref)) return ''
+      const rank = getBisRank(cat, ref)
+      if (rank) return t('item.bis_rank_pill', [String(rank)])
+      return t('item.best_in_slot_base')
+    })
+
     return {
       t,
       label,
       showAsActive,
       toggleAccuracy,
-      corrupted
+      corrupted,
+      bisLabel
     }
   }
 })

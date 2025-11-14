@@ -113,7 +113,10 @@
     "veiled": "Завуалирован",
     "foil_unique": "Реликвия",
     "mirrored": "Отражено",
-    "not_mirrored": "Не отражено"
+    "not_mirrored": "Не отражено",
+    "best_in_slot_base": "Лучший базовый тип",
+    "bis_rank_pill": "BiS #{0}",
+    "best_in_slot_rank_tooltip": "Лучший защитный базовый тип ({0})"
   },
   "item_category": {
     "prop": "Категория: {0}",

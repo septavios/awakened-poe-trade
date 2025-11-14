@@ -95,7 +95,10 @@
     "veiled": "Veiled",
     "foil_unique": "Foil Unique",
     "mirrored": "Mirrored",
-    "not_mirrored": "Not Mirrored"
+    "not_mirrored": "Not Mirrored",
+    "best_in_slot_base": "Best-in-slot base",
+    "bis_rank_pill": "BiS #{0}",
+    "best_in_slot_rank_tooltip": "Top defence base in its slot ({0})"
   },
   "item_category": {
     "prop": "Category: {0}",
