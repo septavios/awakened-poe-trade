@@ -28,8 +28,12 @@ jobs:
 
   renderer:
     runs-on: ubuntu-latest
+    env:
+      CI: true
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -55,8 +59,12 @@ jobs:
       matrix:
         os: [macos-14]
     runs-on: ${{ matrix.os }}
+    env:
+      CI: true
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -76,17 +84,15 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: List dist contents
         run: ls -la ./main/dist || true
-      - name: Attach DMG to GitHub pre-release
-        if: contains(matrix.os, 'macos')
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ github.ref_name }}
-          files: |
-            ./main/dist/*.dmg
-          prerelease: true
-          draft: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Verify DMG exists
+        run: |
+          count=$(ls -1 ./main/dist/*.dmg 2>/dev/null | wc -l)
+          if [ "$count" -eq 0 ]; then
+            echo "No DMG produced in ./main/dist";
+            exit 1;
+          fi
+      # Electron Builder publishes artifacts to the GitHub release via `-p onTag`.
+      # We only verify DMG presence; upload is handled by electron-builder.
       - name: Upload packaged artifacts
         if: always()
         uses: actions/upload-artifact@v4
