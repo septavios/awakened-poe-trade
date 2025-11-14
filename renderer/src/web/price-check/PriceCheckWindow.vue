@@ -152,10 +152,9 @@ export default defineComponent({
     const wm = inject<WidgetManager>('wm')!
     const { xchgRate, initialLoading: xchgRateLoading, queuePricesFetch } = usePoeninja()
 
-    nextTick(() => {
-      props.config.wmWants = 'hide'
-      props.config.wmFlags = ['hide-on-blur', 'menu::skip']
-    })
+    props.config.wmWants = 'hide'
+    props.config.wmFlags = ['hide-on-blur', 'menu::skip']
+    wm.hide(props.config.wmId)
 
     const item = shallowRef<null | Result<ParsedItem, ParseError>>(null)
     const advancedCheck = shallowRef(false)
