@@ -54,6 +54,8 @@ export interface PriceCheckWidget extends Widget {
   enableAllStatFilters: boolean
   showBisBadge: boolean
   showBisType: boolean
+  showBisHud: boolean
+  bisHudDurationMs: number
 }
 
 export interface StopwatchWidget extends Widget {

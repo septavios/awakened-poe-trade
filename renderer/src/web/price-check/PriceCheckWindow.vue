@@ -8,7 +8,7 @@
     <div v-if="!isBrowserShown" class="layout-column shrink-0"
       style="width: var(--game-panel);">
     </div>
-    <div id="price-window" class="layout-column shrink-0 text-gray-200 pointer-events-auto" style="width: 28.75rem;">
+    <div v-if="!hudActive" id="price-window" class="layout-column shrink-0 text-gray-200 pointer-events-auto" style="width: 28.75rem;">
       <AppTitleBar @close="closePriceCheck" @click="openLeagueSelection" :title="title">
         <ui-popover v-if="stableOrbCost" trigger="click" boundary="#price-window">
           <template #target>
@@ -58,10 +58,15 @@
         'flex-row': clickPosition === 'stash',
         'flex-row-reverse': clickPosition === 'inventory'
       }">
-        <related-items v-if="item?.isOk()" class="pointer-events-auto"
+        <related-items v-if="item?.isOk() && !hudActive" class="pointer-events-auto"
           :item="item.value" :click-position="clickPosition" />
-        <rate-limiter-state class="pointer-events-auto" />
+        <rate-limiter-state v-if="!hudActive" class="pointer-events-auto" />
       </div>
+    </div>
+  </div>
+  <div v-if="hudActive" class="absolute" :style="hudStyle">
+    <div class="bg-orange-600 text-gray-900 rounded px-2 py-1 shadow" style="box-shadow: 0 1px 3px 0 rgb(0, 0, 0), 0 1px 2px 0 rgb(0, 0, 0);">
+      {{ hudText }}
     </div>
   </div>
 </template>
@@ -86,6 +91,7 @@ import CheckPositionCircle from './CheckPositionCircle.vue'
 import AppTitleBar from '@/web/ui/AppTitlebar.vue'
 import ItemQuickPrice from '@/web/ui/ItemQuickPrice.vue'
 import { PriceCheckWidget, WidgetManager, WidgetSpec } from '../overlay/interfaces'
+import { isBisBase, getBisRankWithType } from '@/assets/data/bis'
 
 type ParseError = { name: string; message: string; rawText: ParsedItem['rawText'] }
 
@@ -118,7 +124,9 @@ export default defineComponent({
         rememberCurrency: false,
         enableAllStatFilters: false,
         showBisBadge: true,
-        showBisType: true
+        showBisType: true,
+        showBisHud: true,
+        bisHudDurationMs: 2000
       }
     }
   } satisfies WidgetSpec,
@@ -152,12 +160,57 @@ export default defineComponent({
     const item = shallowRef<null | Result<ParsedItem, ParseError>>(null)
     const advancedCheck = shallowRef(false)
     const checkPosition = shallowRef({ x: 1, y: 1 })
+    const hudActive = shallowRef(false)
+    const hudText = shallowRef('')
+    let hudTimer: number | null = null
+    const hudStyle = computed(() => ({
+      top: `calc(${checkPosition.value.y - window.screenY}px + 8px)`,
+      left: `calc(${checkPosition.value.x - window.screenX}px + 8px)`
+    }))
 
     MainProcess.onEvent('MAIN->CLIENT::item-text', (e) => {
       if (e.target !== 'price-check') return
+      checkPosition.value = e.position
+      advancedCheck.value = e.focusOverlay
+
+      item.value = (e.item ? ok(e.item as ParsedItem) : parseClipboard(e.clipboard))
+        .andThen(item => (
+          (item.category === ItemCategory.HeistContract && item.rarity !== ItemRarity.Unique) ||
+          (item.category === ItemCategory.Sentinel && item.rarity !== ItemRarity.Unique))
+          ? err('item.unknown')
+          : ok(item))
+        .mapErr(err => ({
+          name: `${err}`,
+          message: `${err}_help`,
+          rawText: e.clipboard
+        }))
+
+      if (props.config.showBisHud && !e.focusOverlay && item.value?.isOk()) {
+        const parsed = item.value.value
+        const cat = parsed.category as unknown as string | undefined
+        const ref = parsed.info.refName
+        if (isBisBase(parsed.info.namespace, cat, ref)) {
+          const res = getBisRankWithType(cat, ref)
+          if (res) {
+            const typeLabel = t(`item.defence_type_${res.type}`)
+            const showType = !(props.config.showBisType === false)
+            hudText.value = showType
+              ? t('item.bis_rank_pill_with_type', [String(res.rank), typeLabel])
+              : t('item.bis_rank_pill', [String(res.rank)])
+          } else {
+            hudText.value = t('item.best_in_slot_base')
+          }
+          wm.show(props.config.wmId)
+          hudActive.value = true
+          if (hudTimer != null) {
+            clearTimeout(hudTimer)
+          }
+          hudTimer = setTimeout(() => { hudActive.value = false }, props.config.bisHudDurationMs) as unknown as number
+          return
+        }
+      }
 
       if (Host.isElectron && !e.focusOverlay) {
-        // everything in CSS pixels
         const width = 28.75 * AppConfig().fontSize
         const screenX = ((e.position.x - window.screenX) > window.innerWidth / 2)
           ? (window.screenX + window.innerWidth) - wm.poePanelWidth.value - width
@@ -180,20 +233,6 @@ export default defineComponent({
       }
       closeBrowser()
       wm.show(props.config.wmId)
-      checkPosition.value = e.position
-      advancedCheck.value = e.focusOverlay
-
-      item.value = (e.item ? ok(e.item as ParsedItem) : parseClipboard(e.clipboard))
-        .andThen(item => (
-          (item.category === ItemCategory.HeistContract && item.rarity !== ItemRarity.Unique) ||
-          (item.category === ItemCategory.Sentinel && item.rarity !== ItemRarity.Unique))
-          ? err('item.unknown')
-          : ok(item))
-        .mapErr(err => ({
-          name: `${err}`,
-          message: `${err}_help`,
-          rawText: e.clipboard
-        }))
 
       if (item.value.isOk()) {
         queuePricesFetch()
@@ -289,7 +328,10 @@ export default defineComponent({
       handleIdentification,
       overlayKey,
       isLeagueSelected,
-      openLeagueSelection
+      openLeagueSelection,
+      hudActive,
+      hudText,
+      hudStyle
     }
   }
 })

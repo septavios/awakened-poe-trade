@@ -61,6 +61,14 @@
     <ui-checkbox class="mb-4"
       v-model="showBisType">{{ t(':show_bis_type') }}</ui-checkbox>
     <ui-checkbox class="mb-4"
+      v-model="showBisHud">{{ t(':show_bis_hud') }}</ui-checkbox>
+    <div class="mb-4 flex">
+      <div class="flex mr-6">
+        <div class="text-gray-500 mr-2">{{ t(':bis_hud_duration_ms') }}</div>
+        <input v-model.number="bisHudDurationMs" class="rounded bg-gray-900 px-1 block w-24 mb-1 font-poe text-center" />
+      </div>
+    </div>
+    <ui-checkbox class="mb-4"
       v-model="requestPricePrediction">{{ t(':show_prediction') }} <span class="bg-gray-700 px-1 rounded">www.poeprices.info</span></ui-checkbox>
     <ui-checkbox class="mb-4"
       v-model="showCursor">{{ t(':cursor_pos') }}</ui-checkbox>
@@ -144,6 +152,8 @@ export default defineComponent({
       enableAllStatFilters: configModelValue(() => configWidget.value, 'enableAllStatFilters'),
       showBisBadge: configModelValue(() => configWidget.value, 'showBisBadge'),
       showBisType: configModelValue(() => configWidget.value, 'showBisType'),
+      showBisHud: configModelValue(() => configWidget.value, 'showBisHud'),
+      bisHudDurationMs: configModelValue(() => configWidget.value, 'bisHudDurationMs'),
       searchStatRange: computed<number>({
         get () {
           return configWidget.value.searchStatRange
