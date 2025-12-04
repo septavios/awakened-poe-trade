@@ -88,7 +88,7 @@ export function createExactStatFilters (
       { re: /Passive Skills in Radius also grant (\d+)% increased Global Critical Strike Chance/, ref: 'Passive Skills in Radius also grant #% increased Global Critical Strike Chance', fmt: v => `Passive Skills in Radius also grant ${v}% increased Global Critical Strike Chance` },
       { re: /Passive Skills in Radius also grant (\d+)% increased Lightning Damage/, ref: 'Passive Skills in Radius also grant #% increased Lightning Damage', fmt: v => `Passive Skills in Radius also grant ${v}% increased Lightning Damage` },
       { re: /Passive Skills in Radius also grant (\d+)% increased Physical Damage/, ref: 'Passive Skills in Radius also grant #% increased Physical Damage', fmt: v => `Passive Skills in Radius also grant ${v}% increased Physical Damage` },
-      { re: /Passive Skills in Radius also grant (\d+)% to Chaos Resistance/, ref: 'Passive Skills in Radius also grant +#% to Chaos Resistance', fmt: v => `Passive Skills in Radius also grant ${v}% to Chaos Resistance` },
+      { re: /Passive Skills in Radius also grant \+(\d+)% to Chaos Resistance/, ref: 'Passive Skills in Radius also grant +#% to Chaos Resistance', fmt: v => `Passive Skills in Radius also grant +${v}% to Chaos Resistance` },
       { re: /Passive Skills in Radius also grant:\s*(\d+)% increased Unarmed Attack Speed with Melee Skills/, ref: 'Passive Skills in Radius also grant: #% increased Unarmed Attack Speed with Melee Skills', fmt: v => `Passive Skills in Radius also grant: ${v}% increased Unarmed Attack Speed with Melee Skills` },
       { re: /Passive Skills in Radius also grant \+(\d+) to all Attributes/, ref: 'Passive Skills in Radius also grant +# to all Attributes', fmt: v => `Passive Skills in Radius also grant +${v} to all Attributes` },
       { re: /Passive Skills in Radius also grant \+(\d+) to maximum Life/, ref: 'Passive Skills in Radius also grant +# to maximum Life', fmt: v => `Passive Skills in Radius also grant +${v} to maximum Life` },
@@ -160,7 +160,7 @@ export function createExactStatFilters (
 
     if (
       item.rarity === ItemRarity.Unique &&
-      filter.statRef === 'Passive Skills in Radius also grant #% increased Evasion Rating'
+      filter.statRef.startsWith('Passive Skills in Radius also grant ')
     ) {
       filter.disabled = false
       if (filter.roll) {
@@ -249,7 +249,7 @@ export function initUiModFilters (
       { re: /Passive Skills in Radius also grant (\d+)% increased Global Critical Strike Chance/, ref: 'Passive Skills in Radius also grant #% increased Global Critical Strike Chance', fmt: v => `Passive Skills in Radius also grant ${v}% increased Global Critical Strike Chance` },
       { re: /Passive Skills in Radius also grant (\d+)% increased Lightning Damage/, ref: 'Passive Skills in Radius also grant #% increased Lightning Damage', fmt: v => `Passive Skills in Radius also grant ${v}% increased Lightning Damage` },
       { re: /Passive Skills in Radius also grant (\d+)% increased Physical Damage/, ref: 'Passive Skills in Radius also grant #% increased Physical Damage', fmt: v => `Passive Skills in Radius also grant ${v}% increased Physical Damage` },
-      { re: /Passive Skills in Radius also grant (\d+)% to Chaos Resistance/, ref: 'Passive Skills in Radius also grant +#% to Chaos Resistance', fmt: v => `Passive Skills in Radius also grant ${v}% to Chaos Resistance` },
+      { re: /Passive Skills in Radius also grant \+(\d+)% to Chaos Resistance/, ref: 'Passive Skills in Radius also grant +#% to Chaos Resistance', fmt: v => `Passive Skills in Radius also grant +${v}% to Chaos Resistance` },
       { re: /Passive Skills in Radius also grant:\s*(\d+)% increased Unarmed Attack Speed with Melee Skills/, ref: 'Passive Skills in Radius also grant: #% increased Unarmed Attack Speed with Melee Skills', fmt: v => `Passive Skills in Radius also grant: ${v}% increased Unarmed Attack Speed with Melee Skills` },
       { re: /Passive Skills in Radius also grant \+(\d+) to all Attributes/, ref: 'Passive Skills in Radius also grant +# to all Attributes', fmt: v => `Passive Skills in Radius also grant +${v} to all Attributes` },
       { re: /Passive Skills in Radius also grant \+(\d+) to maximum Life/, ref: 'Passive Skills in Radius also grant +# to maximum Life', fmt: v => `Passive Skills in Radius also grant +${v} to maximum Life` },
@@ -287,7 +287,7 @@ export function initUiModFilters (
   for (const filter of ctx.filters) {
     if (
       ctx.item.rarity === ItemRarity.Unique &&
-      filter.statRef === 'Passive Skills in Radius also grant #% increased Evasion Rating'
+      filter.statRef.startsWith('Passive Skills in Radius also grant ')
     ) {
       filter.disabled = false
       if (filter.roll) {
