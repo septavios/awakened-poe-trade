@@ -110,6 +110,20 @@ export function createExactStatFilters (
       filter.roll!.default.min = filter.roll!.value
       filter.roll!.default.max = filter.roll!.value
     }
+
+    if (
+      item.category === ItemCategory.Jewel &&
+      item.rarity === ItemRarity.Unique &&
+      filter.statRef === 'Passive Skills in Radius also grant #% increased Evasion Rating'
+    ) {
+      filter.disabled = false
+      if (filter.roll) {
+        filter.roll.min = filter.roll.value
+        filter.roll.max = filter.roll.value
+        filter.roll.default.min = filter.roll.value
+        filter.roll.default.max = filter.roll.value
+      }
+    }
   }
 
   if (item.category === ItemCategory.ClusterJewel) {
