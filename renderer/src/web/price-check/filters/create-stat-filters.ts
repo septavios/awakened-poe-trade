@@ -194,6 +194,22 @@ export function initUiModFilters (
 
   finalFilterTweaks(ctx)
 
+  for (const filter of ctx.filters) {
+    if (
+      ctx.item.category === ItemCategory.Jewel &&
+      ctx.item.rarity === ItemRarity.Unique &&
+      filter.statRef === 'Passive Skills in Radius also grant #% increased Evasion Rating'
+    ) {
+      filter.disabled = false
+      if (filter.roll) {
+        filter.roll.min = filter.roll.value
+        filter.roll.max = filter.roll.value
+        filter.roll.default.min = filter.roll.value
+        filter.roll.default.max = filter.roll.value
+      }
+    }
+  }
+
   if (opts.enableAllFilters && !item.isVeiled) {
     enableAllFilters(ctx.filters)
   }
