@@ -8,7 +8,7 @@ import { applyRules as applyMirroredTabletRules } from './pseudo/reflection-rule
 import { filterItemProp, filterBasePercentile, filterMemoryStrands } from './pseudo/item-property'
 import { mapProps } from './pseudo/maps'
 import { decodeOils, applyAnointmentRules } from './pseudo/anointments'
-import { StatBetter, CLIENT_STRINGS } from '@/assets/data'
+import { StatBetter, CLIENT_STRINGS, pseudoStatByRef } from '@/assets/data'
 
 export interface FiltersCreationContext {
   readonly item: ParsedItem
@@ -76,6 +76,34 @@ export function createExactStatFilters (
     ...ctx.statsByType.map(mod => calculatedStatToFilter(mod, ctx.searchInRange, item))
   )
 
+  if (item.rarity === ItemRarity.Unique && item.category === ItemCategory.Jewel) {
+    const m = item.rawText.match(/Passive Skills in Radius also grant (\d+)% increased Evasion Rating/)
+    if (m) {
+      const value = Number(m[1])
+      const dbStat = pseudoStatByRef('Passive Skills in Radius also grant #% increased Evasion Rating')!
+      const tradeId = dbStat!.trade.ids[ModifierType.Explicit][0]
+      ctx.filters.push({
+        tradeId: [tradeId],
+        statRef: dbStat!.ref,
+        text: `Passive Skills in Radius also grant ${value}% increased Evasion Rating`,
+        tag: FilterTag.Explicit,
+        oils: undefined,
+        sources: [],
+        roll: {
+          value,
+          min: value,
+          max: value,
+          default: { min: value, max: value },
+          bounds: { min: value, max: value },
+          tradeInvert: false,
+          dp: false,
+          isNegated: false
+        },
+        disabled: false
+      })
+    }
+  }
+
   if (item.info.refName === 'Chronicle of Atzoatl') {
     applyAtzoatlRules(ctx.filters)
     return ctx.filters
@@ -112,7 +140,6 @@ export function createExactStatFilters (
     }
 
     if (
-      item.category === ItemCategory.Jewel &&
       item.rarity === ItemRarity.Unique &&
       filter.statRef === 'Passive Skills in Radius also grant #% increased Evasion Rating'
     ) {
@@ -148,10 +175,7 @@ export function createExactStatFilters (
 
 export function initUiModFilters (
   item: ParsedItem,
-  opts: {
-    searchStatRange: number,
-    enableAllFilters?: boolean
-  }
+  opts: { searchStatRange: number, enableAllFilters?: boolean }
 ): StatFilter[] {
   const ctx: FiltersCreationContext = {
     item,
@@ -194,9 +218,36 @@ export function initUiModFilters (
 
   finalFilterTweaks(ctx)
 
+  if (item.rarity === ItemRarity.Unique && item.category === ItemCategory.Jewel) {
+    const m = item.rawText.match(/Passive Skills in Radius also grant (\d+)% increased Evasion Rating/)
+    if (m) {
+      const value = Number(m[1])
+      const dbStat = pseudoStatByRef('Passive Skills in Radius also grant #% increased Evasion Rating')!
+      const tradeId = dbStat!.trade.ids[ModifierType.Explicit][0]
+      ctx.filters.push({
+        tradeId: [tradeId],
+        statRef: dbStat!.ref,
+        text: `Passive Skills in Radius also grant ${value}% increased Evasion Rating`,
+        tag: FilterTag.Explicit,
+        oils: undefined,
+        sources: [],
+        roll: {
+          value,
+          min: value,
+          max: value,
+          default: { min: value, max: value },
+          bounds: { min: value, max: value },
+          tradeInvert: false,
+          dp: false,
+          isNegated: false
+        },
+        disabled: false
+      })
+    }
+  }
+
   for (const filter of ctx.filters) {
     if (
-      ctx.item.category === ItemCategory.Jewel &&
       ctx.item.rarity === ItemRarity.Unique &&
       filter.statRef === 'Passive Skills in Radius also grant #% increased Evasion Rating'
     ) {
