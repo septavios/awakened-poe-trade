@@ -15,6 +15,20 @@ on:
       - README.md
 
 jobs:
+  create-release:
+    if: ${{ github.ref_type == 'tag' }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: Create GitHub Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref_name }}
+        release_name: ${{ github.ref_name }}
+        draft: false
+        prerelease: false
+
   renderer:
     runs-on: ubuntu-latest
     steps:
@@ -53,6 +67,7 @@ jobs:
     - run: npm run build
       working-directory: ./main
     - run: npm run package "--" -p onTagOrDraft
+      if: ${{ github.ref_type == 'tag' }}
       working-directory: ./main
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
