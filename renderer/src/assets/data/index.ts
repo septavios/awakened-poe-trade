@@ -8,17 +8,17 @@ export let CLIENT_STRINGS: TranslationDict
 export let CLIENT_STRINGS_REF: TranslationDict
 export let APP_PATRONS: Array<{ from: string, months: number, style: number }>
 
-export let ITEM_BY_TRANSLATED = (ns: BaseType['namespace'], name: string): BaseType[] | undefined => undefined
-export let ITEM_BY_REF = (ns: BaseType['namespace'], name: string): BaseType[] | undefined => undefined
-export let ITEMS_ITERATOR = function * (includes: string, andIncludes?: string[]): Generator<BaseType> {}
+export let ITEM_BY_TRANSLATED = (_ns: BaseType['namespace'], _name: string): BaseType[] | undefined => { void _ns; void _name; return undefined }
+export let ITEM_BY_REF = (_ns: BaseType['namespace'], _name: string): BaseType[] | undefined => { void _ns; void _name; return undefined }
+export let ITEMS_ITERATOR = function * (_includes: string, _andIncludes?: string[]): Generator<BaseType> { void _includes; void _andIncludes }
 
 export let ALTQ_GEM_NAMES = function * (): Generator<string> {}
 export let REPLICA_UNIQUE_NAMES = function * (): Generator<string> {}
 
-export let STAT_BY_MATCH_STR = (name: string): { matcher: StatMatcher, stat: Stat } | undefined => undefined
-export let STAT_BY_MATCH_STR_V2 = (name: string): StatOrGroup | undefined => undefined
-export let STAT_BY_REF_V2 = (name: string): StatOrGroup | undefined => undefined
-export let STATS_ITERATOR = function * (includes: string, andIncludes?: string[]): Generator<Stat> {}
+export let STAT_BY_MATCH_STR = (_name: string): { matcher: StatMatcher, stat: Stat } | undefined => { void _name; return undefined }
+export let STAT_BY_MATCH_STR_V2 = (_name: string): StatOrGroup | undefined => { void _name; return undefined }
+export let STAT_BY_REF_V2 = (_name: string): StatOrGroup | undefined => { void _name; return undefined }
+export let STATS_ITERATOR = function * (_includes: string, _andIncludes?: string[]): Generator<Stat> { void _includes; void _andIncludes }
 
 function dataBinarySearch (data: Uint32Array, value: number, rowOffset: number, rowSize: number) {
   let left = 0

@@ -21,7 +21,8 @@ export type TradeResponse<T> = (T & { error?: null }) | {
   }
 }
 
-export function apiToSatisfySearch (item: ParsedItem, stats: StatFilter[], filters: ItemFilters): 'trade' | 'bulk' {
+export function apiToSatisfySearch (item: ParsedItem, stats: StatFilter[], _filters: ItemFilters): 'trade' | 'bulk' {
+  void _filters
   if (stats.some(s => !s.disabled)) {
     return 'trade'
   }

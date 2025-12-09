@@ -9,7 +9,8 @@ module.exports = {
   ],
   extends: [
     'plugin:vue/base',
-    'standard-with-typescript'
+    'plugin:@typescript-eslint/recommended',
+    'plugin:@typescript-eslint/recommended-type-checked'
   ],
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
@@ -32,6 +33,17 @@ module.exports = {
     '@typescript-eslint/prefer-reduce-type-parameter': 'off',
     '@typescript-eslint/no-invalid-void-type': 'off',
     '@typescript-eslint/consistent-indexed-object-style': 'off',
+    '@typescript-eslint/no-unused-expressions': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-unsafe-argument': 'off',
+    '@typescript-eslint/no-unsafe-assignment': 'off',
+    '@typescript-eslint/no-unsafe-return': 'off',
+    '@typescript-eslint/no-unsafe-call': 'off',
+    '@typescript-eslint/no-unsafe-member-access': 'off',
+    '@typescript-eslint/no-unsafe-enum-comparison': 'off',
+    '@typescript-eslint/no-unnecessary-type-assertion': 'off',
+    '@typescript-eslint/no-non-null-asserted-optional-chain': 'off',
+    '@typescript-eslint/no-redundant-type-constituents': 'off',
     'import/first': 'off',
     'import/no-duplicates': 'off',
     'func-call-spacing': 'off',
@@ -43,14 +55,12 @@ module.exports = {
     env: {
       node: true
     }
-  }, {
-    files: ['*.ts'],
-    parserOptions: {
-      project: './tsconfig.json'
-    }
   }],
+  parser: 'vue-eslint-parser',
   parserOptions: {
     parser: '@typescript-eslint/parser',
+    project: './tsconfig.json',
+    tsconfigRootDir: __dirname,
     extraFileExtensions: ['.vue']
   }
 }

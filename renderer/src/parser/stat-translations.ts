@@ -258,7 +258,8 @@ function _resolveTranslation (
   itemCategory?: ItemCategory,
   roll?: number
 ): Stat | undefined {
-  let { resolve, stats } = statGroup
+  const { resolve } = statGroup
+  let { stats } = statGroup
   if (resolve.strat === 'select') {
     // give priority to exact match
     let idx = resolve.test.findIndex(expected => expected !== null &&
