@@ -5,6 +5,9 @@
 [![](https://user-images.githubusercontent.com/4292308/153364565-7a545d26-e617-4a33-a919-ff90d8feda3d.svg)](https://github.com/SnosMe/awakened-poe-trade/issues/22)
 
 
+[![Playground CI](https://github.com/septavios/awakened-poe-trade/actions/workflows/playground.yml/badge.svg)](https://github.com/septavios/awakened-poe-trade/actions/workflows/playground.yml)
+[![Release](https://github.com/septavios/awakened-poe-trade/actions/workflows/release.yml/badge.svg)](https://github.com/septavios/awakened-poe-trade/actions/workflows/release.yml)
+
 ➡ [Download for Windows & Linux](https://snosme.github.io/awakened-poe-trade/download) ⬅
 
 ## Tool showcase

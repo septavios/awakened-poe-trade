@@ -1,0 +1,114 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        type: choice
+        required: true
+        default: production
+        options:
+          - production
+          - staging
+          - dev
+
+permissions:
+  contents: write
+
+jobs:
+  create-release:
+    if: ${{ github.ref_type == 'tag' || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: ${{ github.ref_name }}
+          draft: false
+          prerelease: ${{ github.event_name == 'workflow_dispatch' && inputs.environment == 'staging' }}
+
+  renderer:
+    runs-on: ubuntu-latest
+    needs: create-release
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+        working-directory: ./renderer
+      - run: npm run make-index-files
+        working-directory: ./renderer
+      - run: npm run build
+        working-directory: ./renderer
+      - uses: actions/upload-artifact@v4
+        with:
+          name: renderer-dist
+          path: ./renderer/dist
+          retention-days: 7
+
+  package:
+    needs: renderer
+    strategy:
+      matrix:
+        os: [windows-2022, ubuntu-22.04, macos-14]
+    runs-on: ${{ matrix.os }}
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - uses: actions/download-artifact@v4
+        with:
+          name: renderer-dist
+          path: ./renderer/dist
+      - run: npm ci
+        working-directory: ./main
+      - run: npm run build
+        working-directory: ./main
+      - run: npm run package "--" -p onTagOrDraft
+        working-directory: ./main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  checksums:
+    needs: package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compute checksums
+        run: |
+          find ./main/dist -type f -maxdepth 1 -print0 | xargs -0 shasum -a 256 > checksums.txt || true
+      - name: Upload checksums to Release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: checksums.txt
+          asset_name: checksums-${{ github.ref_name }}.txt
+          tag: ${{ github.ref_name }}
+          overwrite: true
+
+  notify-on-failure:
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Release failed: ${context.payload.ref || context.ref}`,
+              body: `Release workflow failed.\nRun: ${runUrl}`
+            })

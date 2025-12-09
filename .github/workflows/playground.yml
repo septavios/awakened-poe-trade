@@ -1,0 +1,77 @@
+name: Playground CI
+
+on:
+  push:
+    branches:
+      - playground
+
+permissions:
+  contents: read
+
+jobs:
+  renderer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+        working-directory: ./renderer
+      - run: npm run lint
+        working-directory: ./renderer
+      - run: npm run build
+        working-directory: ./renderer
+      - uses: actions/upload-artifact@v4
+        with:
+          name: renderer-dist
+          path: ./renderer/dist
+          retention-days: 14
+
+  main:
+    runs-on: ubuntu-latest
+    needs: renderer
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+        working-directory: ./main
+      - run: npm run build
+        working-directory: ./main
+      - uses: actions/upload-artifact@v4
+        with:
+          name: main-dist
+          path: ./main/dist
+          retention-days: 14
+
+  tests:
+    runs-on: ubuntu-latest
+    needs: [renderer, main]
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: renderer-dist
+          path: ./renderer/dist
+      - uses: actions/download-artifact@v4
+        with:
+          name: main-dist
+          path: ./main/dist
+      - name: Smoke tests
+        run: |
+          test -d ./renderer/dist
+          test -f ./main/dist/main.js
+      - name: Build Summary
+        run: |
+          echo "Renderer files:" > summary.md
+          ls -la ./renderer/dist >> summary.md || true
+          echo "\nMain files:" >> summary.md
+          ls -la ./main/dist >> summary.md || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build-summary
+          path: ./summary.md
+          retention-days: 14
