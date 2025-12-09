@@ -1,6 +1,7 @@
 publish:
   - "github"
 productName: "Awakened PoE Trade"
+artifactName: "APT-${version}-${arch}.${ext}"
 npmRebuild: false
 files:
   - "package.json"
