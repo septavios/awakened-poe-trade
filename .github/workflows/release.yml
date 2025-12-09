@@ -3,11 +3,11 @@ name: Release
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Target environment'
+        description: "Target environment"
         type: choice
         required: true
         default: production
@@ -21,28 +21,30 @@ permissions:
 
 jobs:
   create-release:
+    name: Create Release
     if: ${{ github.ref_type == 'tag' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     steps:
       - name: Create GitHub Release
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref_name }}
-          release_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
           draft: false
           prerelease: ${{ github.event_name == 'workflow_dispatch' && inputs.environment == 'staging' }}
 
   renderer:
-    runs-on: ubuntu-latest
+    name: Build Renderer
     needs: create-release
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
       - run: npm ci
         working-directory: ./renderer
       - run: npm run make-index-files
@@ -53,9 +55,10 @@ jobs:
         with:
           name: renderer-dist
           path: ./renderer/dist
-          retention-days: 7
+          retention-days: 1
 
   package:
+    name: Package & Publish
     needs: renderer
     strategy:
       matrix:
@@ -66,55 +69,30 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
+
       - name: Sync app version from tag
         if: ${{ github.ref_type == 'tag' }}
+        shell: bash
         run: |
           TAG="${{ github.ref_name }}"
           VERSION="${TAG#v}"
           node -e "const fs=require('fs'); const p=require('./main/package.json'); p.version='${VERSION}'; fs.writeFileSync('./main/package.json', JSON.stringify(p,null,2)+'\n');"
+
       - uses: actions/download-artifact@v4
         with:
           name: renderer-dist
           path: ./renderer/dist
+
       - run: npm ci
         working-directory: ./main
+
       - run: npm run build
         working-directory: ./main
-      - run: npm run package "--" -p onTagOrDraft
+
+      - name: Publish Artifacts
         working-directory: ./main
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  checksums:
-    needs: package
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Compute checksums
-        run: |
-          find ./main/dist -maxdepth 1 -type f -print0 | xargs -0 shasum -a 256 > checksums.txt || true
-      - name: Upload checksums to Release
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: checksums.txt
-          asset_name: checksums-${{ github.ref_name }}.txt
-          tag: ${{ github.ref_name }}
-          overwrite: true
-
-  notify-on-failure:
-    if: failure()
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/github-script@v7
-        with:
-          script: |
-            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`
-            await github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: `Release failed: ${context.payload.ref || context.ref}`,
-              body: `Release workflow failed.\nRun: ${runUrl}`
-            })
+        run: npm run package "--" -p onTagOrDraft

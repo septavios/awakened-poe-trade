@@ -1,82 +1,84 @@
-name: Build
-
-permissions:
-  contents: write
+name: CI
 
 on:
   push:
-    branches:
-      - 'master'
-      - 'playground'
-    tags:
-      - 'v*'
+    branches: [master, playground]
     paths-ignore:
-      - 'docs/**'
-      - README.md
+      - "docs/**"
+      - "README.md"
+  pull_request:
+    branches: [master, playground]
+    paths-ignore:
+      - "docs/**"
+      - "README.md"
+
+permissions:
+  contents: read
 
 jobs:
-  create-release:
-    if: ${{ github.ref_type == 'tag' }}
-    runs-on: ubuntu-latest
-    steps:
-    - name: Create GitHub Release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref_name }}
-        release_name: ${{ github.ref_name }}
-        draft: false
-        prerelease: false
-
   renderer:
+    name: Build Renderer
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-    - run: npm ci
-      working-directory: ./renderer
-    - run: npm run make-index-files
-      working-directory: ./renderer
-    - run: npm run lint
-      if: ${{ github.ref_type != 'tag' }}
-      working-directory: ./renderer
-    - run: npm run build
-      working-directory: ./renderer
-    - uses: actions/upload-artifact@v4
-      with:
-        name: renderer-dist
-        path: ./renderer/dist
-        retention-days: 1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - run: npm ci
+        working-directory: ./renderer
+      - run: npm run lint
+        working-directory: ./renderer
+      - run: npm run make-index-files
+        working-directory: ./renderer
+      - run: npm run build
+        working-directory: ./renderer
+      - uses: actions/upload-artifact@v4
+        with:
+          name: renderer-dist
+          path: ./renderer/dist
+          retention-days: 1
 
-  package:
-    needs: renderer
-    strategy:
-      matrix:
-        os: [windows-2022, ubuntu-22.04, macos-14]
-    runs-on: ${{ matrix.os }}
+  main:
+    name: Build Main
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-    - uses: actions/download-artifact@v4
-      with:
-        name: renderer-dist
-        path: ./renderer/dist
-    - run: npm ci
-      working-directory: ./main
-    - run: npm run build
-      working-directory: ./main
-    - run: npm run package "--" -p onTagOrDraft
-      if: ${{ github.ref_type == 'tag' }}
-      working-directory: ./main
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - name: Hash
-      if: ${{ startsWith(matrix.os, 'windows') }}
-      run: type .\main\dist\latest.yml
-    - name: Hash
-      if: ${{ startsWith(matrix.os, 'ubuntu') }}
-      run: cat ./main/dist/latest-linux.yml
-    - name: Hash
-      if: ${{ startsWith(matrix.os, 'macos') }}
-      run: cat ./main/dist/latest-mac.yml
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - run: npm ci
+        working-directory: ./main
+      - run: npm run build
+        working-directory: ./main
+      - uses: actions/upload-artifact@v4
+        with:
+          name: main-dist
+          path: ./main/dist
+          retention-days: 1
+
+  test:
+    name: Smoke Tests
+    needs: [renderer, main]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: renderer-dist
+          path: ./renderer/dist
+      - uses: actions/download-artifact@v4
+        with:
+          name: main-dist
+          path: ./main/dist
+      - name: Verify Build Output
+        run: |
+          if [ ! -f "./renderer/dist/index.html" ]; then
+            echo "Error: renderer/dist/index.html missing"
+            exit 1
+          fi
+          if [ ! -f "./main/dist/main.js" ]; then
+            echo "Error: main/dist/main.js missing"
+            exit 1
+          fi
+          echo "Smoke tests passed."
