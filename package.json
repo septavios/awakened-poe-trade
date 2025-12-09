@@ -6,7 +6,8 @@
     "predev": "npm --prefix renderer run make-index-files",
     "dev": "dotenv -e .env -- concurrently --names renderer,main --prefix \"[{name}]\" --prefix-colors \"cyan.bold,magenta.bold\" --restart-tries 5 --restart-after 3000 \"npm --prefix renderer run dev\" \"npm --prefix main run dev\"",
     "dev:renderer": "npm --prefix renderer run dev",
-    "dev:main": "npm --prefix main run dev"
+    "dev:main": "npm --prefix main run dev",
+    "test:smoke": "node scripts/verify-build.mjs"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",

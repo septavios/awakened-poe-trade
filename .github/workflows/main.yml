@@ -72,13 +72,4 @@ jobs:
           name: main-dist
           path: ./main/dist
       - name: Verify Build Output
-        run: |
-          if [ ! -f "./renderer/dist/index.html" ]; then
-            echo "Error: renderer/dist/index.html missing"
-            exit 1
-          fi
-          if [ ! -f "./main/dist/main.js" ]; then
-            echo "Error: main/dist/main.js missing"
-            exit 1
-          fi
-          echo "Smoke tests passed."
+        run: npm run test:smoke
