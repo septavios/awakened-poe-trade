@@ -5,7 +5,6 @@ import { FilterTag, ItemHasEmptyModifier, StatFilter } from './interfaces'
 import { filterPseudo } from './pseudo'
 import { applyRules as applyAtzoatlRules } from './pseudo/atzoatl-rules'
 import { applyRules as applyMirroredTabletRules } from './pseudo/reflection-rules'
-import { applyRules as applyPrismaticJewelRules } from './pseudo/prismatic-jewel'
 import { filterItemProp, filterBasePercentile, filterMemoryStrands } from './pseudo/item-property'
 import { mapProps } from './pseudo/maps'
 import { decodeOils, applyAnointmentRules } from './pseudo/anointments'
@@ -77,7 +76,6 @@ export function createExactStatFilters (
     ...ctx.statsByType.map(mod => calculatedStatToFilter(mod, ctx.searchInRange, item))
   )
 
-  applyPrismaticJewelRules(item, ctx.filters)
   if (item.info.refName === 'Chronicle of Atzoatl') {
     applyAtzoatlRules(ctx.filters)
     return ctx.filters
@@ -178,7 +176,6 @@ export function initUiModFilters (
 
   finalFilterTweaks(ctx)
 
-  applyPrismaticJewelRules(item, ctx.filters)
   return ctx.filters
 }
 
@@ -204,6 +201,10 @@ export function calculatedStatToFilter (
         value: sources[0].contributes!.value
       },
       disabled: false
+    }
+
+    if (filter.oils) {
+      filter.disabled = true
     }
   }
 
@@ -358,6 +359,12 @@ function hideNotVariableStat (filter: StatFilter, item: ParsedItem) {
     filter.roll.min = undefined
     filter.roll.max = undefined
     filter.hidden = 'filters.hide_const_roll'
+  }
+
+  if (item.isFoulborn && filter.tag === FilterTag.Explicit) {
+    // some mod not being replaced with foulborn one can be important
+    filter.hidden = undefined
+    filter.disabled = false
   }
 }
 
